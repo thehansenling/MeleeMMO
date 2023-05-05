@@ -1,0 +1,96 @@
+{
+    "name": "GameCube",
+    "maps": [
+        {
+            "name": "gamecube",
+            "id": "aafc366d-4dea-488f-ac1e-4df7ffad47ad",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "PassThrough",
+                    "id": "c99c7f91-eaed-4371-a3ca-164d823ed486",
+                    "expectedControlType": "Stick",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "c86c8a43-d6d1-4da5-8016-a2e82d3249ce",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Trigger",
+                    "type": "Button",
+                    "id": "c972fa0a-2d51-49f9-b5ea-2d92bc99fa97",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "10aff480-a207-4f04-aab5-b46bbf48bbae",
+                    "path": "<GameCubeController>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "49513cab-b5d7-4f4e-98ef-cf2c9b9f9595",
+                    "path": "<GameCubeController>/xButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6bbf4f9c-1563-48b8-b728-a212d5fa1b8a",
+                    "path": "<GameCubeController>/yButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "58142177-ebed-4808-bd68-c117e23124ec",
+                    "path": "<GameCubeController>/leftTriggerButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Trigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "08cb650f-cef7-49f1-8b0e-66825d1934a6",
+                    "path": "<GameCubeController>/rightTriggerButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Trigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
