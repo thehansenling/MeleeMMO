@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-enum PlayerState {
+enum PlayerStateOld {
     NEUTRAL = 0,
     WALK = 1,
     RUN = 2,
@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
     float MAX_SPEED = .8f;
     int air_dodges = 0;
     bool in_air_;
-    Rigidbody2D rigid_body_;
+    public Rigidbody2D rigid_body_;
     
     float move_speed_;
     int jumps_;
@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     Vector2 air_dodge_direction_;
     Vector2 directional_influence_;
     Vector2 move_velocity_;
-    PlayerState state_;
+    PlayerStateOld state_;
     int state_frames_;
     bool invulnerable_;
     int inactionable_frames_;
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
         directional_influence_ = new Vector2(0, 0);
         direction_ = new Vector2(0, 0);
         move_velocity_ = new Vector2(0, 0);
-        state_ = PlayerState.NEUTRAL;
+        state_ = PlayerStateOld.NEUTRAL;
         invulnerable_ = false;
         inactionable_frames_ = 0;
         actionable_ = true;
@@ -130,7 +130,7 @@ public class Player : MonoBehaviour
         Vector2 air_dodge_force = new Vector2(0, 0);
         if (actionable_)
         {
-            if (in_air_)
+            if (in_air_ || state_ == PlayerStateOld.JUMP)
             {
 
                 if (trigger_button_)
@@ -138,19 +138,10 @@ public class Player : MonoBehaviour
                     
                     air_dodges++;
                     state_frames_ = 0;
-                    //if (Mathf.Abs(move.x) > .1 || Mathf.Abs(move.y) > .1)
-                    //{
-                    //    air_dodge_direction_ = new Vector2(move.x * .1f, move.y * .1f);
 
-                    //    state_ = PlayerState.DIRECTIONALAIRDODGE;
-                    //}
-                    //else
-                    //{
-                    //    state_ = PlayerState.NEUTRALAIRDODGE;
-                    //}
                     air_dodge_direction_ = new Vector2(move.x * .3f, move.y * .3f);
 
-                    state_ = PlayerState.AIRDODGE;
+                    state_ = PlayerStateOld.AIRDODGE;
                     actionable_ = false;
                 }
 
@@ -168,13 +159,13 @@ public class Player : MonoBehaviour
                 {
                     //print("FIRST");
                     float ground_move_x = (Mathf.Abs(move.x) / move.x) * MAX_SPEED;
-                    if (state_ == PlayerState.NEUTRAL)
+                    if (state_ == PlayerStateOld.NEUTRAL)
                     {
                         state_frames_ = 0;
-                        state_ = PlayerState.DASH;
+                        state_ = PlayerStateOld.DASH;
                         direction_ = new Vector2(move.x, move.y);
                     }
-                    else if (state_ == PlayerState.RUN_STOP)
+                    else if (state_ == PlayerStateOld.RUN_STOP)
                     {
                         state_frames_++;
 
@@ -182,32 +173,32 @@ public class Player : MonoBehaviour
                         {
 
                             state_frames_ = 0;
-                            state_ = PlayerState.STOP;
+                            state_ = PlayerStateOld.STOP;
                             
                         }
                         else if ((direction_.x < 0 && move.x > 0) ||
                             (direction_.x > 0 && move.x < 0))
                         {
                             state_frames_ = 0;
-                            state_ = PlayerState.TURNRUN;
+                            state_ = PlayerStateOld.TURNRUN;
                         }
                         else
                         {
                             state_frames_ = 0;
-                            state_ = PlayerState.RUN;
+                            state_ = PlayerStateOld.RUN;
                             direction_ = new Vector2(move.x, move.y);
                         }
                     }
-                    else if (state_ == PlayerState.DASH_STOP)
+                    else if (state_ == PlayerStateOld.DASH_STOP)
                     {
                         state_frames_++;
 
                         state_frames_ = 0;
-                        state_ = PlayerState.DASH;
+                        state_ = PlayerStateOld.DASH;
 
                         direction_ = new Vector2(move.x, move.y);
                     }
-                    else if (state_ == PlayerState.DASH)
+                    else if (state_ == PlayerStateOld.DASH)
                     {
                         print("DASH FRAMES");
                         print(state_frames_);
@@ -216,21 +207,21 @@ public class Player : MonoBehaviour
                             (direction_.x > 0 && move.x < 0))
                         {
                             state_frames_ = 0;
-                            state_ = PlayerState.DASH;
+                            state_ = PlayerStateOld.DASH;
                         }
                         else
                         {
                             if (state_frames_ > DASH_FRAMES)
                             {
                                 state_frames_ = 0;
-                                state_ = PlayerState.RUN;
+                                state_ = PlayerStateOld.RUN;
                             }
                         }
                         direction_ = new Vector2(ground_move_x, move.y);
 
 
                     }
-                    else if (state_ == PlayerState.RUN)
+                    else if (state_ == PlayerStateOld.RUN)
                     {
                         print("RUNNING");
                         print(direction_.x);
@@ -239,13 +230,13 @@ public class Player : MonoBehaviour
                             (direction_.x > 0 && move.x < 0))
                         {
                             print("GOING INTO TURNRUN");
-                            state_ = PlayerState.TURNRUN;
+                            state_ = PlayerStateOld.TURNRUN;
                             state_frames_ = 0;
                             direction_ = new Vector2(ground_move_x, move.y);
                         }
                         print(move_velocity_);
                     }
-                    else if (state_ == PlayerState.TURNRUN)
+                    else if (state_ == PlayerStateOld.TURNRUN)
                     {
                         if ((direction_.x < 0 && move.x > 0) ||
                             (direction_.x > 0 && move.x < 0))
@@ -260,27 +251,27 @@ public class Player : MonoBehaviour
                             if (state_frames_ >= TURNRUN_FRAMES)
                             {
                                 state_frames_ = 0;
-                                state_ = PlayerState.RUN;
+                                state_ = PlayerStateOld.RUN;
                                 direction_ = new Vector2(move.x, move.y);
                             }
                         }
                     }
-                    else if (state_ == PlayerState.STOP)
+                    else if (state_ == PlayerStateOld.STOP)
                     {
                         if (move.x != 0)
                         {
                             state_frames_ = 0;
-                            state_ = PlayerState.DASH;
+                            state_ = PlayerStateOld.DASH;
                             direction_ = new Vector2(move.x, move.y);
                         }
                     }
 
-                    if (state_ == PlayerState.TURNRUN)
+                    if (state_ == PlayerStateOld.TURNRUN)
                     {
                         print("WHAT");
                         move_velocity_ = new Vector2(0, 0);
                     }
-                    else if (state_ == PlayerState.STOP)
+                    else if (state_ == PlayerStateOld.STOP)
                     {
                         print("AHHHH");
                         move_velocity_ = new Vector2(move_velocity_.x / 2, 0);
@@ -296,21 +287,21 @@ public class Player : MonoBehaviour
                 {
                     //print("SECOND");
                     print((move_velocity_, move.x)) ;
-                    if (state_ == PlayerState.DASH)
+                    if (state_ == PlayerStateOld.DASH)
                     {
-                        state_ = PlayerState.DASH_STOP;
+                        state_ = PlayerStateOld.DASH_STOP;
                         state_frames_ = 0;
                         move_velocity_ = new Vector2(move_velocity_.x, move_velocity_.y);
                     }
-                    else if (state_ == PlayerState.RUN)
+                    else if (state_ == PlayerStateOld.RUN)
                     {
-                        state_ = PlayerState.RUN_STOP;
+                        state_ = PlayerStateOld.RUN_STOP;
                         state_frames_ = 0;
                         move_velocity_ = new Vector2(move_velocity_.x, move_velocity_.y);
                         print("RUNSDG");
                         print(move_velocity_);
                     }
-                    else if (state_ == PlayerState.RUN_STOP)
+                    else if (state_ == PlayerStateOld.RUN_STOP)
                     {
                         state_frames_ += 1;
                         float x_velocity = move_velocity_.x - MAX_SPEED / (float) RUN_STOP_FRAMES;
@@ -325,40 +316,40 @@ public class Player : MonoBehaviour
                         print(move_velocity_);
                         if (state_frames_ >= RUN_STOP_FRAMES)
                         {
-                            state_ = PlayerState.STOP;
+                            state_ = PlayerStateOld.STOP;
                             state_frames_ = 0;
                             print(">STOPFRAMES");
                             move_velocity_ = new Vector2(0, 0);
                         }
                     }
-                    else if (state_ == PlayerState.DASH_STOP)
+                    else if (state_ == PlayerStateOld.DASH_STOP)
                     {
                         
                         state_frames_ += 1;
                         move_velocity_ = new Vector2(move_velocity_.x, move_velocity_.y);
                         if (state_frames_ >= DASH_STOP_FRAMES)
                         {
-                            state_ = PlayerState.STOP;
+                            state_ = PlayerStateOld.STOP;
                             state_frames_ = 0;
                             print("NOWAY");
                             move_velocity_ = new Vector2(0, 0);
                         }
                     }
-                    else if (state_ != PlayerState.STOP &&
-                        state_ != PlayerState.NEUTRAL)
+                    else if (state_ != PlayerStateOld.STOP &&
+                        state_ != PlayerStateOld.NEUTRAL)
                     {
-                        state_ = PlayerState.STOP;
+                        state_ = PlayerStateOld.STOP;
                         state_frames_ = 0;
                         move_velocity_ = new Vector2(0, 0);
                         print("STOP VELCOITY");
                     }
-                    else if (state_ == PlayerState.STOP)
+                    else if (state_ == PlayerStateOld.STOP)
                     {
                         state_frames_++;
                         if (state_frames_ > STOP_FRAMES)
                         {
                             state_frames_ = 0;
-                            state_ = PlayerState.NEUTRAL;
+                            state_ = PlayerStateOld.NEUTRAL;
                             move_velocity_ = new Vector2(0, 0);
                         }
                         move_velocity_ = new Vector2(move_velocity_.x / 2, 0);
@@ -367,7 +358,7 @@ public class Player : MonoBehaviour
                     else
                     {
                        
-                        state_ = PlayerState.NEUTRAL;
+                        state_ = PlayerStateOld.NEUTRAL;
                         move_velocity_ = new Vector2(0, 0);
                         //print("STOP VELCOITY2");
                     }
@@ -377,49 +368,87 @@ public class Player : MonoBehaviour
                 directional_influence_ = new Vector2(0, 0);
             }
         }
-        else
+
+        //directional_influence_ = new Vector2(0, 0);
+        if (state_ == PlayerStateOld.JUMPSQUAT)
         {
-            directional_influence_ = new Vector2(0, 0);
-            if (state_ == PlayerState.JUMPSQUAT)
+            move_velocity_ = new Vector2(0, 0);
+            state_frames_++;
+            if (state_frames_ > JUMPSQUAT_FRAMES)
             {
-                move_velocity_ = new Vector2(0, 0);
-                state_frames_++;
-                if (state_frames_ >= JUMPSQUAT_FRAMES)
-                {
-                    state_frames_ = 0;
-                    state_ = PlayerState.JUMP;
-                    jumps_--;
-                    Vector2 jump_force = new Vector2(0, 1500);
-                    Vector2 move_velocity = new Vector2(direction_.x * MAX_SPEED, 0);
-                    //print(move_velocity);
-                    //rigid_body_.velocity = move_velocity;
-                    rigid_body_.AddForce(jump_force);
-                    in_air_ = true;
-                    actionable_ = true;
-                }
-            }
-            else if (state_ == PlayerState.AIRDODGE)
-            {
-                rigid_body_.velocity = new Vector2(0, 0);
-                move_velocity_ = new Vector2(air_dodge_direction_.x, air_dodge_direction_.y);
-                state_frames_++;
-                if (state_frames_ > AIR_DODGE_FRAMES)
-                {
-                    air_dodge_direction_ = new Vector2(0, 0);
-                    move_velocity_ = new Vector2(0, 0);
-                    state_ = PlayerState.NEUTRAL;
-                }
-                else if (state_frames_ > AIR_DODGE_FRAMES / 4)
-                {
-                    air_dodge_direction_ = new Vector2(0, 0);
-                    move_velocity_ = new Vector2(0, 0);
-                }
+                state_frames_ = 0;
+                state_ = PlayerStateOld.JUMP;
 
-                
+                in_air_ = true;
+                actionable_ = true;
             }
+        } 
+        else if (state_ == PlayerStateOld.JUMP)
+        {
+        	state_frames_++;
+        	if (state_frames_ == 1)
+        	{
+                jumps_--;
+                Vector2 jump_force = new Vector2(0, 30);
+                Vector2 move_velocity = new Vector2(direction_.x * MAX_SPEED, 0);
+                //print(move_velocity);
+                //rigid_body_.velocity = move_velocity;
+                rigid_body_.velocity = new Vector2(rigid_body_.velocity.x, jump_force.y);
+                state_ = PlayerStateOld.NEUTRAL;
+                state_frames_ = 0;	
+            }
+
         }
+        else if (state_ == PlayerStateOld.AIRDODGE)
+        {
+            
+            state_frames_++;
+            if (state_frames_ > AIR_DODGE_FRAMES)
+            {
+            	rigid_body_.velocity = new Vector2(0, 0);
+                air_dodge_direction_ = new Vector2(0, 0);
+                state_ = PlayerStateOld.NEUTRAL;
+            }
+            else if (state_frames_ > AIR_DODGE_FRAMES / 4)
+            {
+            	rigid_body_.velocity = new Vector2(0, 0); 
+                air_dodge_direction_ = new Vector2(0, 0);
+                move_velocity_ = new Vector2(0, 0);
+            }
+            float air_dodge_speed = 100;
+            rigid_body_.velocity = new Vector2(air_dodge_direction_.x* air_dodge_speed, air_dodge_direction_.y * air_dodge_speed);
+            print("AIR DODGE");
+            print((air_dodge_direction_.x, air_dodge_direction_.y));
+            
+        }
+        else if (actionable_ && jump_button_  && jumps_ > 0)
+        {
+            //jumps_--;
+            //Vector2 jump_force = new Vector2(0, 1500);
+            //Vector2 move_velocity = new Vector2(direction_.x * 8, 0);
+            //rigid_body_.velocity = move_velocity;
+            //rigid_body_.AddForce(jump_force);
+            if (in_air_)
+            {
+                state_frames_ = 0;
+                state_ = PlayerStateOld.JUMP;
+                jumps_--;
+                Vector2 jump_force = new Vector2(0, 30);
 
-        if (state_ != PlayerState.AIRDODGE)
+                //rigid_body_.velocity = new Vector2(rigid_body_.velocity.x, 0);
+                rigid_body_.velocity = new Vector2(rigid_body_.velocity.x, jump_force.y);
+                //actionable_ = true;
+
+            }
+            else
+            {
+                state_ = PlayerStateOld.JUMPSQUAT;
+                actionable_ = false;
+            }
+
+            //state_ = PlayerStateOld.JUMP; this should happen before velocity set with other actions when jumpsquat frames implemented
+        }
+		else
         {
             directional_influence_.x = directional_influence_.x * DI_MODIFIER;
             directional_influence_.y = directional_influence_.y * DI_MODIFIER;
@@ -429,8 +458,10 @@ public class Player : MonoBehaviour
             capped_x = Mathf.Max(capped_x, -MAX_SPEED);
             move_velocity_.x = capped_x;
             move_velocity_.x = move_velocity_.x * .12f;
+
+            transform.Translate(new Vector3(move_velocity_.x, move_velocity_.y, 0));
         }
-        //print(state_);
+        print(state_);
         //print(air_dodges);
 
         //print("HEY: " + in_air_);
@@ -442,44 +473,25 @@ public class Player : MonoBehaviour
         //print(capped_x);
         
         //print(move_velocity_);
-        transform.Translate(new Vector3(move_velocity_.x, move_velocity_.y, 0));
+        
         //transform.position.Set(transform.position.x + move_velocity_.x, transform.position.y, transform.position.z);
         //rigid_body_.velocity = move_velocity_ + directional_influence_ ;
 
         //rigid_body_.velocity = new Vector2(capped_x, rigid_body_.velocity.y);
         
-        if (actionable_ && jump_button_  && jumps_ > 0)
-        {
-            //jumps_--;
-            //Vector2 jump_force = new Vector2(0, 1500);
-            //Vector2 move_velocity = new Vector2(direction_.x * 8, 0);
-            //rigid_body_.velocity = move_velocity;
-            //rigid_body_.AddForce(jump_force);
-            if (in_air_)
-            {
-                state_frames_ = 0;
-                state_ = PlayerState.JUMP;
-                jumps_--;
-                Vector2 jump_force = new Vector2(0, 1500);
 
-                rigid_body_.velocity = new Vector2(rigid_body_.velocity.x, 0);
-                rigid_body_.AddForce(jump_force);
-                //actionable_ = true;
-
-            }
-            else
-            {
-                state_ = PlayerState.JUMPSQUAT;
-                actionable_ = false;
-            }
-
-            //state_ = PlayerState.JUMP; this should happen before velocity set with other actions when jumpsquat frames implemented
-        }
         jump_button_ = false;
         a_button_ = false;
         trigger_button_ = false;
         DisplayState();
-        
+
+        // if (state_ == PlayerStateOld.JUMP)
+        // {
+       	// 	Application.targetFrameRate = 1;
+       	// 	//Time.timeScale = 0;
+        // } else {
+        // 	//Application.targetFrameRate = 60;
+        // }
     }
 
     //NEUTRAL = 0,
@@ -495,43 +507,43 @@ public class Player : MonoBehaviour
 
     private void DisplayState()
     {
-        if (state_ == PlayerState.NEUTRAL)
+        if (state_ == PlayerStateOld.NEUTRAL)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.blue;
         }
-        else if (state_ == PlayerState.DASH)
+        else if (state_ == PlayerStateOld.DASH)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.magenta;
         }
-        else if (state_ == PlayerState.RUN)
+        else if (state_ == PlayerStateOld.RUN)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.green;
         }
-        else if (state_ == PlayerState.TURN)
+        else if (state_ == PlayerStateOld.TURN)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.black;
         }
-        else if (state_ == PlayerState.TURNRUN)
+        else if (state_ == PlayerStateOld.TURNRUN)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.red;
         }
-        else if (state_ == PlayerState.AIRDODGE)
+        else if (state_ == PlayerStateOld.AIRDODGE)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.grey;
         }
-        else if (state_ == PlayerState.JUMP)
+        else if (state_ == PlayerStateOld.JUMP)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.red;
         }
-        else if (state_ == PlayerState.STOP)
+        else if (state_ == PlayerStateOld.STOP)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.yellow;
         }
-        else if (state_ == PlayerState.JUMPSQUAT)
+        else if (state_ == PlayerStateOld.JUMPSQUAT)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.grey;
         }
-        else if (state_ == PlayerState.RUN_STOP)
+        else if (state_ == PlayerStateOld.RUN_STOP)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.magenta;
         }
@@ -544,10 +556,14 @@ public class Player : MonoBehaviour
             in_air_ = false;
             jumps_ = 2;
             actionable_ = true;
-            if (state_ == PlayerState.AIRDODGE)
+            if (state_ == PlayerStateOld.AIRDODGE)
             {
                 
-                state_ = PlayerState.NEUTRAL;
+                state_ = PlayerStateOld.NEUTRAL;
+            }
+            else 
+            {
+            	state_ = PlayerStateOld.STOP;
             }
         }
     }
