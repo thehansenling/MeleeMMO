@@ -10,6 +10,7 @@ class JumpPlayerState : ActionableAirbornePlayerState {
 	}
 
 	protected override void onExecute(Inputs inputs) {
+		base.onExecute(inputs);
 		if (frame_ == 0) {
 			player_.rigid_body_.velocity = new Vector2(player_.rigid_body_.velocity.x, 30);
 		}

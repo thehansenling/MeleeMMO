@@ -31,7 +31,7 @@ public class Character : MonoBehaviour
     int RUN_STOP_FRAMES = 20;
     int JUMPSQUAT_FRAMES = 4;
     float DI_MODIFIER = 1f;
-    float MAX_SPEED = .8f;
+    public int MAX_SPEED = 16;
     int air_dodges = 0;
     bool in_air_;
     public Rigidbody2D rigid_body_;
@@ -40,14 +40,15 @@ public class Character : MonoBehaviour
     public int jumps_;
     Vector2 direction_;
     Vector2 air_dodge_direction_;
-    Vector2 directional_influence_;
+    public Vector2 last_directional_influence_;
+    public Vector2 directional_influence_;
     Vector2 move_velocity_;
     PlayerStateOld state_;
     int state_frames_;
     bool invulnerable_;
     int inactionable_frames_;
     bool actionable_;
-    float directional_influence_force_;
+    public float directional_influence_force_;
     public bool from_air_ = false;
 
     public bool move_direction_right_ = true;
@@ -66,7 +67,6 @@ public class Character : MonoBehaviour
 	PlayerState last_state_;
 	bool hit_;
 	bool collision_;
-
     Inputs inputs_;
 
     void DetectCollisionExit()
@@ -151,7 +151,7 @@ public class Character : MonoBehaviour
         invulnerable_ = false;
         inactionable_frames_ = 0;
         actionable_ = true;
-        directional_influence_force_ = 5;
+        directional_influence_force_ = 2;
         air_dodge_direction_ = new Vector2(0, 0);
         inputs_ = new Inputs();
         current_state_ = new NeutralPlayerState(this);
@@ -258,6 +258,10 @@ public class Character : MonoBehaviour
         else if (current_state_.name_ == "WALK")
         {
             gameObject.GetComponent<Renderer>().material.color = Color.black;
+        }
+        else if (current_state_.name_ == "TURNAROUND")
+        {
+            gameObject.GetComponent<Renderer>().material.color = Color.cyan;
         }
     }
 

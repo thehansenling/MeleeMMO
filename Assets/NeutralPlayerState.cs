@@ -13,12 +13,12 @@ class NeutralPlayerState : PlayerState {
 		{
 			return this;
 		}
-		return new WalkPlayerState(player_); //should be walk
+		return new TurnaroundPlayerState(player_, inputs); //should be walk
 	}
 
 	protected override PlayerState onControlStickPushed(Inputs inputs)
 	{
-		return new DashPlayerState(player_);
+		return new DashStartPlayerState(player_);
 	}
 
     protected override PlayerState onControlStickNotPushed(Inputs inputs)

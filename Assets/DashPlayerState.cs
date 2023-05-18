@@ -3,7 +3,7 @@ using System;
 
 class DashPlayerState : PlayerState {
 	public override string name_ { get { return "DASH"; } }
-	public override int duration_frames_ { get { return 20; } }
+	public override int duration_frames_ { get { return 10; } }
 	public DashPlayerState(Character player) : base(player) {}
 
 	
@@ -15,7 +15,7 @@ class DashPlayerState : PlayerState {
             return new NeutralPlayerState(player_);
         } else if (((player_.move_direction_right_ && move.x < -STICK_DEADZONE_THRESHOLD) || 
             (!player_.move_direction_right_ && move.x > STICK_DEADZONE_THRESHOLD))) {
-            return new DashTurnaroundPlayerState(player_);
+            return new DashStopPlayerState(player_);
         }
         return this;
 	}
@@ -31,25 +31,25 @@ class DashPlayerState : PlayerState {
         {
             if (move.x < -STICK_DEADZONE_THRESHOLD)
             {
-                return new DashTurnaroundPlayerState(player_);
+                return new DashStopPlayerState(player_);
             }
         }
         else
         {
             if (move.x > STICK_DEADZONE_THRESHOLD)
             {
-                return new DashTurnaroundPlayerState(player_);
+                return new DashStopPlayerState(player_);
             }
         }
         return new DashPlayerState(player_);
 	}
 
-    // protected override PlayerState onControlStickNotPushed(Inputs inputs) {
+    protected override PlayerState onControlStickNotPushed(Inputs inputs)
+    {
+        return new DashStopPlayerState(player_);
+    }
 
-    //     return new NeutralPlayerState(player_);
-    // }
-
-	protected override PlayerState onJumpPushed() {
+    protected override PlayerState onJumpPushed() {
 		return new JumpSquatPlayerState(player_);
 	}
 
@@ -60,7 +60,7 @@ class DashPlayerState : PlayerState {
         {
             return new RunPlayerState(player_);
         }
-		return new NeutralPlayerState(player_);
+		return new DashStopPlayerState(player_);
 	}
 
 	protected override void onExecute(Inputs inputs) {
