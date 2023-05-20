@@ -12,6 +12,7 @@ class DashPlayerState : PlayerState {
         Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
         if (move.y < -STICK_DASH_THRESHOLD)
         {
+            player_.rigid_body_.velocity = new Vector2(0, player_.rigid_body_.velocity.y);
             return new NeutralPlayerState(player_);
         } else if (((player_.move_direction_right_ && move.x < -STICK_DEADZONE_THRESHOLD) || 
             (!player_.move_direction_right_ && move.x > STICK_DEADZONE_THRESHOLD))) {
@@ -25,6 +26,7 @@ class DashPlayerState : PlayerState {
         Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
         if (move.y < -STICK_DASH_THRESHOLD)
         {
+            player_.rigid_body_.velocity = new Vector2(0, player_.rigid_body_.velocity.y);
             return new NeutralPlayerState(player_);
         }
         else if (player_.move_direction_right_)

@@ -44,6 +44,7 @@ class RunStopPlayerState : PlayerState {
 	}
 
 	protected override void onExecute(Inputs inputs) {
-		return;
+        player_.rigid_body_.velocity = new Vector2(player_.rigid_body_.velocity.x * .8f, player_.rigid_body_.velocity.y);
+        return;
 	}
 }

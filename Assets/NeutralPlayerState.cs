@@ -9,11 +9,16 @@ class NeutralPlayerState : PlayerState {
 	protected override PlayerState onControlStickHeld(Inputs inputs)
 	{
         Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if (Math.Abs(move.x) < .2)
+        if (Math.Abs(move.x) < STICK_DEADZONE_THRESHOLD)
 		{
 			return this;
 		}
-		return new TurnaroundPlayerState(player_, inputs); //should be walk
+		else if ((move.x > STICK_DEADZONE_THRESHOLD && !player_.move_direction_right_ ) ||
+                (move.x < -STICK_DEADZONE_THRESHOLD && player_.move_direction_right_))
+		{
+            return new TurnaroundPlayerState(player_, inputs); //should be walk
+        }
+		return new WalkPlayerState(player_);
 	}
 
 	protected override PlayerState onControlStickPushed(Inputs inputs)

@@ -3,7 +3,7 @@ using System;
 
 class RunTurnPlayerState : PlayerState {
 	public override string name_ { get { return "RUN_TURN"; } }
-	public override int duration_frames_ { get { return 20; } }
+	public override int duration_frames_ { get { return 26; } }
 	public RunTurnPlayerState(Character player) : base(player) {}
 
 	protected override PlayerState onControlStickHeld(Inputs inputs)

@@ -68,7 +68,9 @@ public class Character : MonoBehaviour
 	bool hit_;
 	bool collision_;
     Inputs inputs_;
-
+    public int MAX_FALL_SPEED;
+    public bool air_dodge_;
+    public Vector2 air_dodge_velocity_;
     void DetectCollisionExit()
     {
         CapsuleCollider2D coll = GetComponent<CapsuleCollider2D>();
@@ -90,13 +92,11 @@ public class Character : MonoBehaviour
     public void MoveCharacter(Inputs input, float speed = 16)
     {
 		Vector2 move = ((StickInputAction)input.control_stick_.getInputAction()).value_;
-        print(move);
 		float move_x = 0;
 		if (move.x >= 0) move_x = 1;
 		if (move.x < 0) move_x = -1;
 		// this.rigid_body_.AddForce(new Vector2(move_x * 200, 0));
 		rigid_body_.velocity = new Vector2(move_x * speed, rigid_body_.velocity.y);
-        print(rigid_body_.velocity);
     }
 
     public void MoveCharacterFacing(float speed = 16)
@@ -112,7 +112,6 @@ public class Character : MonoBehaviour
         } 
         // this.rigid_body_.AddForce(new Vector2(move_x * 200, 0));
         rigid_body_.velocity = new Vector2(move_x * speed, rigid_body_.velocity.y);
-        print(rigid_body_.velocity);
     }
 
 	void UpdateInputs()
@@ -151,12 +150,14 @@ public class Character : MonoBehaviour
         invulnerable_ = false;
         inactionable_frames_ = 0;
         actionable_ = true;
-        directional_influence_force_ = 2;
+        directional_influence_force_ = .5f;
         air_dodge_direction_ = new Vector2(0, 0);
         inputs_ = new Inputs();
         current_state_ = new NeutralPlayerState(this);
         last_state_ = new NeutralPlayerState(this);
-
+        MAX_FALL_SPEED = 30;
+        air_dodge_ = false;
+        air_dodge_velocity_ = new Vector2(0, 0);
     }
 
     private void Awake()
@@ -165,10 +166,7 @@ public class Character : MonoBehaviour
 
     private void OnMove(InputValue value)
     {
-
         control_stick_ = value.Get<Vector2>();
-        //print("controlstick");
-        //print(control_stick_);
     }
 
     private void OnJump(InputValue value)
@@ -187,14 +185,15 @@ public class Character : MonoBehaviour
     {
         DetectCollisionExit();
     	UpdateInputs();
-		print(current_state_.name_);
-        // print(((ButtonInputAction)inputs_.shield_.getInputAction()).input_action_state_);
-    	print(((StickInputAction)inputs_.control_stick_.getInputAction()).value_);
+		print("Current State: " + current_state_.name_);
+    	print("Stick Input: " + ((StickInputAction)inputs_.control_stick_.getInputAction()).value_);
+        print("Current Velocity: " + rigid_body_.velocity);
 		// If state is ending based on number of frames
 		if (current_state_.frame_ >= current_state_.duration_frames_ && current_state_.duration_frames_ != -1)
 		{
 			current_state_ = current_state_.defaultNextState(inputs_);
 		}
+        print("Post Default Velocity: " + rigid_body_.velocity);
 
         current_state_ = current_state_.processInputs(inputs_);
         
@@ -207,11 +206,14 @@ public class Character : MonoBehaviour
 		{
 			current_state_ = current_state_.processOnCollision(inputs_);
 		}
+        print("Post Collision Velocity: " + rigid_body_.velocity);
 
-		current_state_.execute(inputs_);
+        current_state_.execute(inputs_);
+        print("Post Execute Velocity: " + rigid_body_.velocity);
 
-		last_state_ = current_state_;
+        last_state_ = current_state_;
         //end
+   
         DisplayState();
  		ResetInputs();
     }
@@ -269,19 +271,40 @@ public class Character : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground")
         {
+            print("ENTER COLLISION DETECTED");
             collision_ = true;
             in_air_ = false;
             jumps_ = 1;
-            actionable_ = true;
-            if (state_ == PlayerStateOld.AIRDODGE)
-            {
-                state_ = PlayerStateOld.NEUTRAL;
-            }
-            else 
-            {
-            	state_ = PlayerStateOld.STOP;
-            }
-            rigid_body_.velocity = new Vector2(rigid_body_.velocity.x, 0);
+
+            //if (air_dodge_)
+            //{
+            //    print("Initial x velocity: " + rigid_body_.velocity);
+            //    float max_wave_dash_speed = 20;
+            //    float min_wave_dash_speed = 6;
+            //    float wave_dash_speed = air_dodge_velocity_.x * 10;
+            //    if (wave_dash_speed > 0)
+            //    {
+            //        wave_dash_speed = Mathf.Min(wave_dash_speed, max_wave_dash_speed);
+            //        wave_dash_speed = Mathf.Max(wave_dash_speed, min_wave_dash_speed);
+            //    }
+            //    if (wave_dash_speed < 0)
+            //    {
+            //        wave_dash_speed = Mathf.Max(wave_dash_speed, -max_wave_dash_speed);
+            //        wave_dash_speed = Mathf.Min(wave_dash_speed, -min_wave_dash_speed);
+            //    }
+            //    rigid_body_.velocity = new Vector2(wave_dash_speed, 0);
+            //    print("after wavedash velocity: " + rigid_body_.velocity);
+            //}
+            //air_dodge_ = false;
+            //if (state_ == PlayerStateOld.AIRDODGE)
+            //{
+            //    state_ = PlayerStateOld.NEUTRAL;
+            //}
+            //else 
+            //{
+            //	state_ = PlayerStateOld.STOP;
+            //}
+            //rigid_body_.velocity = new Vector2(rigid_body_.velocity.x, 0);
         }
     }
 

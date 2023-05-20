@@ -25,7 +25,8 @@ class ActionableAirbornePlayerState : PlayerState {
     protected override PlayerState onJumpPushed() {
     	if (player_.jumps_ > 0)
     	{
-    		player_.jumps_--;
+            player_.rigid_body_.velocity = new Vector2(0, 0);
+            player_.jumps_--;
     		return new JumpPlayerState(player_);
     	}
 		return this;
@@ -40,7 +41,10 @@ class ActionableAirbornePlayerState : PlayerState {
 		float potential_x_speed = player_.rigid_body_.velocity.x + di_force;
 		float speed_sign = potential_x_speed >= 0 ? 1 : -1;
 		float x_speed = Math.Min(player_.MAX_SPEED, Math.Abs(potential_x_speed));
-        player_.rigid_body_.velocity = new Vector2(speed_sign * x_speed, player_.rigid_body_.velocity.y);
+
+		float clamped_fall_speed = Math.Max(-player_.MAX_FALL_SPEED, player_.rigid_body_.velocity.y);
+
+        player_.rigid_body_.velocity = new Vector2(speed_sign * x_speed, clamped_fall_speed);
 
 		return;
 	}

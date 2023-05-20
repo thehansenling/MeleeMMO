@@ -71,7 +71,7 @@ public class StickInput : Input {
 			return new StickInputAction(InputActionState.CONSUMED, stick_);
 		}
 
-		if ((stick_ - stick_previous_).magnitude > .6 && stick_.magnitude > .85) {
+		if ((stick_ - stick_previous_).magnitude > .4 && stick_.magnitude > .4) {
 			return new StickInputAction(InputActionState.PUSHED, stick_);
 		} else if (stick_.magnitude > .2) {
 			return new StickInputAction(InputActionState.HELD, stick_);

@@ -16,6 +16,10 @@ class DashStopPlayerState : PlayerState {
         }
         return this;
     }
+    protected override PlayerState onJumpPushed()
+    {
+        return new JumpSquatPlayerState(player_);
+    }
 
     protected override PlayerState onControlStickPushed(Inputs inputs)
     {
@@ -34,6 +38,7 @@ class DashStopPlayerState : PlayerState {
 	}
 
 	protected override void onExecute(Inputs inputs) {
+        player_.rigid_body_.velocity = new Vector2(player_.rigid_body_.velocity.x * .8f, player_.rigid_body_.velocity.y);
 		return;
 	}
 }

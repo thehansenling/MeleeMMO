@@ -136,8 +136,9 @@ public abstract class PlayerState
 	}
 
 	// Function called from game loop
-	public void execute(Inputs inputs) { 
-		onExecute(inputs);
+	public void execute(Inputs inputs) {
+        player_.rigid_body_.gravityScale = 1;
+        onExecute(inputs);
 		frame_++;
 	}
 	protected abstract void onExecute(Inputs inputs);
