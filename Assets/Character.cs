@@ -108,6 +108,7 @@ public class Character : MonoBehaviour
         WALK_SPEED = 6;
         air_dodge_ = false;
         air_dodge_velocity_ = new Vector2(0, 0);
+        directional_influence_force_ = 1f;
     }
 
     private void Awake()
