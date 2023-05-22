@@ -7,19 +7,23 @@ class DashStartPlayerState : DashPlayerState
     public override int duration_frames_ { get { return 6; } }
     public DashStartPlayerState(Character player) : base(player) { }
 
-    protected override PlayerState onControlStickNotPushed(Inputs inputs)
-    {
-        return this;
-    }
-
     public override PlayerState defaultNextState(Inputs inputs)
     {
-        Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if ((player_.move_direction_right_ && move.x > STICK_DEADZONE_THRESHOLD) ||
-            (!player_.move_direction_right_ && move.x < -STICK_DEADZONE_THRESHOLD))
+        Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+
+        bool facing_right = true;
+        if (stick_value.x < 0)
         {
+            facing_right = false;
+        }
+
+        if ((player_.facing_right_ && stick_value.x > STICK_DEADZONE_THRESHOLD) ||
+            (!player_.facing_right_ && stick_value.x < -STICK_DEADZONE_THRESHOLD))
+        {
+            player_.facing_right_ = facing_right;
             return new DashPlayerState(player_);
         }
+        player_.facing_right_ = facing_right;
         return new DashStopPlayerState(player_);
     }
 }

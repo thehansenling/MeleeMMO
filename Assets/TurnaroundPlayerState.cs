@@ -7,8 +7,8 @@ class TurnaroundPlayerState : NeutralPlayerState {
 	private bool facing_right_ = true;
 	public TurnaroundPlayerState(Character player, Inputs inputs) : base(player) 
 	{
-		Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-		facing_right_ = move.x >= 0;
+		Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+		facing_right_ = stick_value.x >= 0;
 	}
 
 	protected override PlayerState onControlStickHeld(Inputs inputs)
@@ -18,18 +18,13 @@ class TurnaroundPlayerState : NeutralPlayerState {
 
    	public override PlayerState defaultNextState(Inputs inputs)
 	{
-		player_.move_direction_right_ = 
+		player_.facing_right_ = 
 			facing_right_;
-        Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if (Math.Abs(move.x) > .2)
+        Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+        if (Math.Abs(stick_value.x) > STICK_DEADZONE_THRESHOLD)
 		{	
 			return new WalkPlayerState(player_);	
 		}
 		return new NeutralPlayerState(player_);
-	}
-
-
-	protected override void onExecute(Inputs inputs) {
-		return;
 	}
 }

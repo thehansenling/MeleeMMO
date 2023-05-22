@@ -7,13 +7,13 @@ class RunStopPlayerState : PlayerState {
 
 	protected override PlayerState onControlStickHeld(Inputs inputs)
 	{
-		Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-		if (move.y < -STICK_DASH_THRESHOLD)
+		Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+		if (stick_value.y < -STICK_DASH_THRESHOLD)
 		{
 			return new NeutralPlayerState(player_);
 		}
-		else if ((move.x < -STICK_DEADZONE_THRESHOLD && player_.move_direction_right_) || 
-			(move.x > STICK_DEADZONE_THRESHOLD && !player_.move_direction_right_))
+		else if ((stick_value.x < -STICK_DEADZONE_THRESHOLD && player_.facing_right_) || 
+			(stick_value.x > STICK_DEADZONE_THRESHOLD && !player_.facing_right_))
 		{
 			return new RunTurnPlayerState(player_);
 		}
@@ -22,13 +22,13 @@ class RunStopPlayerState : PlayerState {
 
 	protected override PlayerState onControlStickPushed(Inputs inputs)
 	{
-		Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-		if (move.y < -STICK_DASH_THRESHOLD)
+		Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+		if (stick_value.y < -STICK_DASH_THRESHOLD)
 		{
 			return new NeutralPlayerState(player_);
 		}
-		else if ((move.x < -STICK_DEADZONE_THRESHOLD && player_.move_direction_right_) || 
-			(move.x > STICK_DEADZONE_THRESHOLD && !player_.move_direction_right_))
+		else if ((stick_value.x < -STICK_DEADZONE_THRESHOLD && player_.facing_right_) || 
+			(stick_value.x > STICK_DEADZONE_THRESHOLD && !player_.facing_right_))
 		{
 			return new RunTurnPlayerState(player_);
 		}

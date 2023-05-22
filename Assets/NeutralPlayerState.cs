@@ -8,13 +8,13 @@ class NeutralPlayerState : PlayerState {
 
 	protected override PlayerState onControlStickHeld(Inputs inputs)
 	{
-        Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if (Math.Abs(move.x) < STICK_DEADZONE_THRESHOLD)
+        Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+        if (Math.Abs(stick_value.x) < STICK_DEADZONE_THRESHOLD)
 		{
 			return this;
 		}
-		else if ((move.x > STICK_DEADZONE_THRESHOLD && !player_.move_direction_right_ ) ||
-                (move.x < -STICK_DEADZONE_THRESHOLD && player_.move_direction_right_))
+		else if ((stick_value.x > STICK_DEADZONE_THRESHOLD && !player_.facing_right_ ) ||
+                (stick_value.x < -STICK_DEADZONE_THRESHOLD && player_.facing_right_))
 		{
             return new TurnaroundPlayerState(player_, inputs); //should be walk
         }
@@ -26,17 +26,7 @@ class NeutralPlayerState : PlayerState {
 		return new DashStartPlayerState(player_);
 	}
 
-    protected override PlayerState onControlStickNotPushed(Inputs inputs)
-    {
-        return this;
-
-    }
-
     protected override PlayerState onJumpPushed() {
 		return new JumpSquatPlayerState(player_);
-	}
-
-	protected override void onExecute(Inputs inputs) {
-		return;
 	}
 }

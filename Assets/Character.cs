@@ -4,58 +4,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
-// enum PlayerState {
-//     NEUTRAL = 0,
-//     WALK = 1,
-//     RUN = 2,
-//     DASH = 3,
-//     TURN = 4,
-//     TURNRUN = 5,
-//     AIRDODGE = 6,
-//     JUMP = 7,
-//     JUMPSQUAT = 8,
-//     STOP = 9,
-//     DASH_STOP = 10,
-//     RUN_STOP = 11,
-// }
-
-
 
 public class Character : MonoBehaviour
 {
-    int TURNRUN_FRAMES = 60;
-    int DASH_FRAMES = 30;
-    int AIR_DODGE_FRAMES = 40;
-    int STOP_FRAMES = 30;
-    int DASH_STOP_FRAMES = 10;
-    int RUN_STOP_FRAMES = 20;
-    int JUMPSQUAT_FRAMES = 4;
-    float DI_MODIFIER = 1f;
-    public int MAX_SPEED = 16;
-    int air_dodges = 0;
+
+    public int MAX_SPEED;
+    public int WALK_SPEED;
+    public int MAX_FALL_SPEED;
     bool in_air_;
     public Rigidbody2D rigid_body_;
-    
-    float move_speed_;
     public int jumps_;
-    Vector2 direction_;
-    Vector2 air_dodge_direction_;
-    public Vector2 last_directional_influence_;
-    public Vector2 directional_influence_;
-    Vector2 move_velocity_;
-    PlayerStateOld state_;
-    int state_frames_;
-    bool invulnerable_;
-    int inactionable_frames_;
-    bool actionable_;
     public float directional_influence_force_;
-    public bool from_air_ = false;
+    public bool facing_right_ = true;
+    public bool air_dodge_;
+    public Vector2 air_dodge_velocity_;
 
-    public bool move_direction_right_ = true;
-    // Start is called before the first frame update
-    Vector2 move;
 
-	bool shield_ = false;
+    bool shield_ = false;
 	bool jump_ = false;
 	bool attack_ = false;
 	Vector2 attack_stick_ = new Vector2(0, 0);
@@ -64,13 +29,10 @@ public class Character : MonoBehaviour
 	Vector2 control_stick_ = new Vector2(0, 0);	
 
 	PlayerState current_state_;
-	PlayerState last_state_;
 	bool hit_;
-	bool collision_;
+	//bool collision_;
     Inputs inputs_;
-    public int MAX_FALL_SPEED;
-    public bool air_dodge_;
-    public Vector2 air_dodge_velocity_;
+
     void DetectCollisionExit()
     {
         CapsuleCollider2D coll = GetComponent<CapsuleCollider2D>();
@@ -86,23 +48,21 @@ public class Character : MonoBehaviour
             }
         }
         in_air_ = !on_ground;
-        from_air_ = true;
     }
 
     public void MoveCharacter(Inputs input, float speed = 16)
     {
-		Vector2 move = ((StickInputAction)input.control_stick_.getInputAction()).value_;
+		Vector2 stick_value = ((StickInputAction)input.control_stick_.getInputAction()).value_;
 		float move_x = 0;
-		if (move.x >= 0) move_x = 1;
-		if (move.x < 0) move_x = -1;
-		// this.rigid_body_.AddForce(new Vector2(move_x * 200, 0));
+		if (stick_value.x >= 0) move_x = 1;
+		if (stick_value.x < 0) move_x = -1;
 		rigid_body_.velocity = new Vector2(move_x * speed, rigid_body_.velocity.y);
     }
 
     public void MoveCharacterFacing(float speed = 16)
     {
         float move_x = 0;
-        if (move_direction_right_) 
+        if (facing_right_) 
         {
             move_x = 1;
         }
@@ -110,7 +70,6 @@ public class Character : MonoBehaviour
         {
             move_x = -1;
         } 
-        // this.rigid_body_.AddForce(new Vector2(move_x * 200, 0));
         rigid_body_.velocity = new Vector2(move_x * speed, rigid_body_.velocity.y);
     }
 
@@ -133,7 +92,7 @@ public class Character : MonoBehaviour
 		grab_ = false;
 		special_ = false;
 
-        collision_ = false;
+        //collision_ = false;
 	}
 
     void Start()
@@ -142,20 +101,11 @@ public class Character : MonoBehaviour
         jumps_ = 2;
         in_air_ = false;
         rigid_body_ = GetComponent<Rigidbody2D>();
-        move_speed_ = 10;
-        directional_influence_ = new Vector2(0, 0);
-        direction_ = new Vector2(0, 0);
-        move_velocity_ = new Vector2(0, 0);
-        state_ = PlayerStateOld.NEUTRAL;
-        invulnerable_ = false;
-        inactionable_frames_ = 0;
-        actionable_ = true;
-        directional_influence_force_ = .5f;
-        air_dodge_direction_ = new Vector2(0, 0);
         inputs_ = new Inputs();
         current_state_ = new NeutralPlayerState(this);
-        last_state_ = new NeutralPlayerState(this);
         MAX_FALL_SPEED = 30;
+        MAX_SPEED = 16;
+        WALK_SPEED = 6;
         air_dodge_ = false;
         air_dodge_velocity_ = new Vector2(0, 0);
     }
@@ -211,7 +161,6 @@ public class Character : MonoBehaviour
         current_state_.execute(inputs_);
         print("Post Execute Velocity: " + rigid_body_.velocity);
 
-        last_state_ = current_state_;
         //end
    
         DisplayState();
@@ -272,48 +221,9 @@ public class Character : MonoBehaviour
         if (collision.gameObject.tag == "Ground")
         {
             print("ENTER COLLISION DETECTED");
-            collision_ = true;
+            //collision_ = true;
             in_air_ = false;
             jumps_ = 1;
-
-            //if (air_dodge_)
-            //{
-            //    print("Initial x velocity: " + rigid_body_.velocity);
-            //    float max_wave_dash_speed = 20;
-            //    float min_wave_dash_speed = 6;
-            //    float wave_dash_speed = air_dodge_velocity_.x * 10;
-            //    if (wave_dash_speed > 0)
-            //    {
-            //        wave_dash_speed = Mathf.Min(wave_dash_speed, max_wave_dash_speed);
-            //        wave_dash_speed = Mathf.Max(wave_dash_speed, min_wave_dash_speed);
-            //    }
-            //    if (wave_dash_speed < 0)
-            //    {
-            //        wave_dash_speed = Mathf.Max(wave_dash_speed, -max_wave_dash_speed);
-            //        wave_dash_speed = Mathf.Min(wave_dash_speed, -min_wave_dash_speed);
-            //    }
-            //    rigid_body_.velocity = new Vector2(wave_dash_speed, 0);
-            //    print("after wavedash velocity: " + rigid_body_.velocity);
-            //}
-            //air_dodge_ = false;
-            //if (state_ == PlayerStateOld.AIRDODGE)
-            //{
-            //    state_ = PlayerStateOld.NEUTRAL;
-            //}
-            //else 
-            //{
-            //	state_ = PlayerStateOld.STOP;
-            //}
-            //rigid_body_.velocity = new Vector2(rigid_body_.velocity.x, 0);
         }
     }
-
-    //private void OnCollisionExit2D(Collision2D collision)
-    //{
-    //    print("EXITING");
-    //    // if (collision.gameObject.tag == "Ground")
-    //    // {
-    //        in_air_ = true;
-    //    // }
-    //}
 }

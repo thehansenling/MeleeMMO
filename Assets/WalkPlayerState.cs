@@ -14,8 +14,8 @@ class WalkPlayerState : PlayerState
 
     protected override PlayerState onControlStickPushed(Inputs inputs)
     {
-        Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if (move.y < -STICK_DASH_THRESHOLD || Math.Abs(move.x) < STICK_DEADZONE_THRESHOLD)
+        Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+        if (stick_value.y < -STICK_DASH_THRESHOLD || Math.Abs(stick_value.x) < STICK_DEADZONE_THRESHOLD)
         {
             return new NeutralPlayerState(player_);
         }
@@ -24,8 +24,8 @@ class WalkPlayerState : PlayerState
 
     protected override PlayerState onControlStickHeld(Inputs inputs)
     {
-        Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if (move.y < -STICK_DASH_THRESHOLD || Math.Abs(move.x) < STICK_DEADZONE_THRESHOLD)
+        Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+        if (stick_value.y < -STICK_DASH_THRESHOLD || Math.Abs(stick_value.x) < STICK_DEADZONE_THRESHOLD)
         {
             return new NeutralPlayerState(player_);
         }
@@ -40,17 +40,17 @@ class WalkPlayerState : PlayerState
     {
         if (frame_ == 0)
         {
-            Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-            if (move.x < 0)
+            Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+            if (stick_value.x < 0)
             {
-                player_.move_direction_right_ = false;
+                player_.facing_right_ = false;
             }
             else
             {
-                player_.move_direction_right_ = true;
+                player_.facing_right_ = true;
             }
         }
-        player_.MoveCharacter(inputs, 4);
+        player_.MoveCharacter(inputs, player_.WALK_SPEED);
         return;
     }
 }

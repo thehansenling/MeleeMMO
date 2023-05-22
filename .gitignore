@@ -1,0 +1,14 @@
+**/Temp
+**/Library/Artifacts
+**/Library/PackageCache
+**/Library/TempArtifacts
+**/Library/ArtifactDB*  
+**/.vs/MeleeMMO/*
+**/Assets/.vs/*
+**/Library/ScriptAssemblies/*  
+**/Library/ShaderCache/*  
+**/Logs
+**.vscode/settings.json
+**.vsconfig
+**Assembly-CSharp.csproj
+**/Library/StateCache/*

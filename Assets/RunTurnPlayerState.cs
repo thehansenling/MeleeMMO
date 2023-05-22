@@ -6,16 +6,6 @@ class RunTurnPlayerState : PlayerState {
 	public override int duration_frames_ { get { return 26; } }
 	public RunTurnPlayerState(Character player) : base(player) {}
 
-	protected override PlayerState onControlStickHeld(Inputs inputs)
-	{
-        return this;
-    }
-
-	protected override PlayerState onControlStickPushed(Inputs inputs)
-	{
-        return this;
-    }
-
     protected override PlayerState onJumpPushed() {
         return new JumpSquatPlayerState(player_);
     }
@@ -28,16 +18,16 @@ class RunTurnPlayerState : PlayerState {
 	protected override void onExecute(Inputs inputs) {
         if (frame_ == 0)
         {
-            Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+            Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
             if (!(inputs.control_stick_.stickVelocity().x > STICK_DASH_THRESHOLD) && 
-                (inputs.control_stick_.stickVelocity().x < -STICK_DASH_THRESHOLD || 
-                move.x < -STICK_DEADZONE_THRESHOLD))
+                (inputs.control_stick_.stickVelocity().x < -STICK_DASH_THRESHOLD ||
+                stick_value.x < -STICK_DEADZONE_THRESHOLD))
             {
-                player_.move_direction_right_ = false;
+                player_.facing_right_ = false;
             }
             else
             {
-                player_.move_direction_right_ = true;
+                player_.facing_right_ = true;
             }
         }
         return;

@@ -32,10 +32,4 @@ class LandingLagPlayerState : PlayerState {
 	public override PlayerState defaultNextState(Inputs inputs) {
 		return new NeutralPlayerState(player_);
 	}
-
-	protected override void onExecute(Inputs inputs)
-	{
-		//player_.rigid_body_.velocity = new Vector2(player_.rigid_body_.velocity.x, 0);
-        return;
-    }
 }

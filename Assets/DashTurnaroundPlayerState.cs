@@ -7,10 +7,10 @@ class DashTurnaroundPlayerState : PlayerState {
 
 	protected override PlayerState onControlStickHeld(Inputs inputs)
 	{
-		Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+		Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
 		if (frame_ == 1 && 
-			((player_.move_direction_right_ && move.x < -STICK_DEADZONE_THRESHOLD) || 
-			(!player_.move_direction_right_ && move.x > STICK_DEADZONE_THRESHOLD)))
+			((player_.facing_right_ && stick_value.x < -STICK_DEADZONE_THRESHOLD) || 
+			(!player_.facing_right_ && stick_value.x > STICK_DEADZONE_THRESHOLD)))
 		{
 			return new DashPlayerState(player_);
 		}
@@ -19,10 +19,10 @@ class DashTurnaroundPlayerState : PlayerState {
 
 	protected override PlayerState onControlStickPushed(Inputs inputs)
 	{
-		Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+		Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
 		if (frame_ == 1 && 
-			((player_.move_direction_right_ && move.x < -STICK_DEADZONE_THRESHOLD) || 
-			(!player_.move_direction_right_ && move.x > STICK_DEADZONE_THRESHOLD)))
+			((player_.facing_right_ && stick_value.x < -STICK_DEADZONE_THRESHOLD) || 
+			(!player_.facing_right_ && stick_value.x > STICK_DEADZONE_THRESHOLD)))
 		{
 			return new DashPlayerState(player_);
 		}
@@ -31,9 +31,5 @@ class DashTurnaroundPlayerState : PlayerState {
 
 	public override PlayerState defaultNextState(Inputs inputs) {
 		return new NeutralPlayerState(player_);
-	}
-
-	protected override void onExecute(Inputs inputs) {
-		return;
 	}
 }

@@ -9,13 +9,13 @@ class DashPlayerState : PlayerState {
 	
 	protected override PlayerState onControlStickHeld(Inputs inputs)
 	{
-        Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if (move.y < -STICK_DASH_THRESHOLD)
+        Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+        if (stick_value.y < -STICK_DASH_THRESHOLD)
         {
             player_.rigid_body_.velocity = new Vector2(0, player_.rigid_body_.velocity.y);
             return new NeutralPlayerState(player_);
-        } else if (((player_.move_direction_right_ && move.x < -STICK_DEADZONE_THRESHOLD) || 
-            (!player_.move_direction_right_ && move.x > STICK_DEADZONE_THRESHOLD))) {
+        } else if (((player_.facing_right_ && stick_value.x < -STICK_DEADZONE_THRESHOLD) || 
+            (!player_.facing_right_ && stick_value.x > STICK_DEADZONE_THRESHOLD))) {
             return new DashStopPlayerState(player_);
         }
         return this;
@@ -23,22 +23,22 @@ class DashPlayerState : PlayerState {
 		
 	protected override PlayerState onControlStickPushed(Inputs inputs)
 	{
-        Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if (move.y < -STICK_DASH_THRESHOLD)
+        Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+        if (stick_value.y < -STICK_DASH_THRESHOLD)
         {
             player_.rigid_body_.velocity = new Vector2(0, player_.rigid_body_.velocity.y);
             return new NeutralPlayerState(player_);
         }
-        else if (player_.move_direction_right_)
+        else if (player_.facing_right_)
         {
-            if (move.x < -STICK_DEADZONE_THRESHOLD)
+            if (stick_value.x < -STICK_DEADZONE_THRESHOLD)
             {
                 return new DashStopPlayerState(player_);
             }
         }
         else
         {
-            if (move.x > STICK_DEADZONE_THRESHOLD)
+            if (stick_value.x > STICK_DEADZONE_THRESHOLD)
             {
                 return new DashStopPlayerState(player_);
             }
@@ -56,9 +56,9 @@ class DashPlayerState : PlayerState {
 	}
 
 	public override PlayerState defaultNextState(Inputs inputs) {
-        Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if ((player_.move_direction_right_ && move.x > STICK_DEADZONE_THRESHOLD) || 
-            (!player_.move_direction_right_ && move.x < -STICK_DEADZONE_THRESHOLD))
+        Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+        if ((player_.facing_right_ && stick_value.x > STICK_DEADZONE_THRESHOLD) || 
+            (!player_.facing_right_ && stick_value.x < -STICK_DEADZONE_THRESHOLD))
         {
             return new RunPlayerState(player_);
         }
@@ -66,16 +66,16 @@ class DashPlayerState : PlayerState {
 	}
 
 	protected override void onExecute(Inputs inputs) {
-        Vector2 move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+        Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
         if (frame_ == 0)
 		{
-            if (move.x < 0)
+            if (stick_value.x < 0)
             {
-                player_.move_direction_right_ = false;
+                player_.facing_right_ = false;
             }
             else
             {
-                player_.move_direction_right_ = true;
+                player_.facing_right_ = true;
             }
         }
         player_.MoveCharacterFacing();

@@ -141,7 +141,7 @@ public abstract class PlayerState
         onExecute(inputs);
 		frame_++;
 	}
-	protected abstract void onExecute(Inputs inputs);
+	protected virtual void onExecute(Inputs inputs) {}
 
 	// On Input functions
 	protected virtual PlayerState onShieldPushed(Inputs inputs) { return this; }
