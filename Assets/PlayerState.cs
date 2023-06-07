@@ -4,6 +4,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
+enum CharacterState
+{
+	Neutral,
+	NeutralAir,
+	BackAir,
+	DownAir,
+	ForwardAir,
+	UpAir,
+    LandingLag
+}
+
 public abstract class PlayerState
 {
     public double STICK_DASH_THRESHOLD = .4;
@@ -57,11 +68,11 @@ public abstract class PlayerState
 		ButtonInputAction attackAction = (ButtonInputAction) inputs.attack_.getInputAction();
 		switch(attackAction.input_action_state_) {
 			case InputActionState.PUSHED:
-				newState = onAttackPushed();
+				newState = onAttackPushed(inputs);
 				inputs.attack_.consumed_ = true;
 				return newState.processInputs(inputs);
 			case InputActionState.HELD:
-				newState = onAttackHeld();
+				newState = onAttackHeld(inputs);
 				inputs.attack_.consumed_ = true;
 				return newState.processInputs(inputs);
 			default:
@@ -71,11 +82,11 @@ public abstract class PlayerState
 		StickInputAction attackStickAction = (StickInputAction) inputs.attack_stick_.getInputAction();
 		switch(attackStickAction.input_action_state_) {
 			case InputActionState.PUSHED:
-				newState = onAttackStickPushed();
+				newState = onAttackStickPushed(inputs);
 				inputs.attack_stick_.consumed_ = true;
 				return newState.processInputs(inputs);
 			case InputActionState.HELD:
-				newState = onAttackStickHeld();
+				newState = onAttackStickHeld(inputs);
 				inputs.attack_stick_.consumed_ = true;
 				return newState.processInputs(inputs);
 			default:
@@ -148,10 +159,10 @@ public abstract class PlayerState
 	protected virtual PlayerState onShieldHeld() { return this; }
 	protected virtual PlayerState onJumpPushed() { return this; }
 	protected virtual PlayerState onJumpHeld() { return this; }
-	protected virtual PlayerState onAttackPushed() { return this; }
-	protected virtual PlayerState onAttackHeld() { return this; }
-	protected virtual PlayerState onAttackStickPushed() { return this; }
-	protected virtual PlayerState onAttackStickHeld() { return this; }
+	protected virtual PlayerState onAttackPushed(Inputs inputs) { return this; }
+	protected virtual PlayerState onAttackHeld(Inputs inputs) { return this; }
+	protected virtual PlayerState onAttackStickPushed(Inputs inputs) { return this; }
+	protected virtual PlayerState onAttackStickHeld(Inputs inputs) { return this; }
 	protected virtual PlayerState onGrabPushed() { return this; }
 	protected virtual PlayerState onGrabHeld() { return this; }
 	protected virtual PlayerState onSpecialPushed() { return this; }

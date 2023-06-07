@@ -6,6 +6,7 @@ class LandingLagPlayerState : PlayerState {
 	//public override int duration_frames_;// { get { return duration_frames_; } }
 	public LandingLagPlayerState(Character player, int duration_frames = 20) : base(player) 
 	{
+        player_.animator_.SetInteger("state", (int)CharacterState.LandingLag);
         if (player_.air_dodge_)
         {
             //print("Initial x velocity: " + player_.rigid_body_.velocity);

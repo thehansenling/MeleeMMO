@@ -6,6 +6,28 @@ class ActionableAirbornePlayerState : PlayerState {
 	public override int duration_frames_ { get { return -1; } }
 	public ActionableAirbornePlayerState(Character player) : base(player) {}
 
+	private PlayerState processAttackDirection(Vector2 stick)
+	{
+        if (Math.Abs(stick.x) > STICK_DEADZONE_THRESHOLD && Math.Abs(stick.x) > Math.Abs(stick.y))
+		{
+			if ((stick.x > 0 && player_.facing_right_) || 
+				(stick.x < 0 && !player_.facing_right_))
+			{
+				return new ForwardAirPlayerState(player_);
+			}
+			return new BackAirPlayerState(player_);
+		}
+		else if (Math.Abs(stick.y) > STICK_DEADZONE_THRESHOLD && Math.Abs(stick.y) > Math.Abs(stick.x))
+		{
+			if (stick.y > 0)
+			{
+				return new UpAirPlayerState(player_);
+			}
+			return new DownAirPlayerState(player_);
+		}
+		return new NeutralAirPlayerState(player_);
+	}
+
 	public override PlayerState processOnCollision(Inputs inputs) {
 		if (frame_ > 1) {
 			return new LandingLagPlayerState(player_, 12);
@@ -27,7 +49,18 @@ class ActionableAirbornePlayerState : PlayerState {
 		return this;
 	}
 
-	protected override void onExecute(Inputs inputs) {
+    protected override PlayerState onAttackPushed(Inputs inputs)
+    {
+        Vector2 stick = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
+        return processAttackDirection(stick);
+    }
+    protected override PlayerState onAttackStickPushed(Inputs inputs)
+    {
+        Vector2 stick = ((StickInputAction)inputs.attack_stick_.getInputAction()).value_;
+        return processAttackDirection(stick);
+    }
+
+    protected override void onExecute(Inputs inputs) {
         float move = ((StickInputAction)inputs.control_stick_.getInputAction()).value_.x;
         float di_force = move * player_.directional_influence_force_;
 		float potential_x_speed = player_.rigid_body_.velocity.x + di_force;

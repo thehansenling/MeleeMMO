@@ -31,6 +31,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "6f77f0c9-d7c0-4fdc-9dbc-6f58fae1bcd4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "AttackStick",
+                    "type": "PassThrough",
+                    "id": "feedcdda-f98e-4f15-9a06-55a8ff608063",
+                    "expectedControlType": "Stick",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -86,6 +104,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Trigger",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1ddae630-b995-4cac-abaf-9a8901e8fe0a",
+                    "path": "<GameCubeController>/aButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bc0b04ad-c3a7-42fa-98fe-e4cbf309553a",
+                    "path": "<GameCubeController>/controlStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AttackStick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

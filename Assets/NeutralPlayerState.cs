@@ -4,7 +4,10 @@ using System;
 class NeutralPlayerState : PlayerState {
 	public override string name_ { get { return "NEUTRAL"; } }
 	public override int duration_frames_ { get { return -1; } }
-	public NeutralPlayerState(Character player) : base(player) {}
+	public NeutralPlayerState(Character player) : base(player) 
+	{
+		player_.animator_.SetInteger("state", (int)CharacterState.Neutral);
+	}
 
 	protected override PlayerState onControlStickHeld(Inputs inputs)
 	{

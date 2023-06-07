@@ -13,6 +13,7 @@ public class Character : MonoBehaviour
     public int MAX_FALL_SPEED;
     bool in_air_;
     public Rigidbody2D rigid_body_;
+    public Animator animator_;
     public int jumps_;
     public float directional_influence_force_;
     public bool facing_right_ = true;
@@ -101,6 +102,7 @@ public class Character : MonoBehaviour
         jumps_ = 2;
         in_air_ = false;
         rigid_body_ = GetComponent<Rigidbody2D>();
+        animator_ = GetComponent<Animator>();
         inputs_ = new Inputs();
         current_state_ = new NeutralPlayerState(this);
         MAX_FALL_SPEED = 30;
@@ -130,10 +132,21 @@ public class Character : MonoBehaviour
         shield_ = true;
     }
 
+    private void OnAttack(InputValue value)
+    {
+        attack_ = true;
+    }
+
+    private void OnAttackStick(InputValue value)
+    {
+        attack_stick_ = value.Get<Vector2>();
+    }
+
 
     // Update is called once per frame
     void Update()
     {
+        
         DetectCollisionExit();
     	UpdateInputs();
 		print("Current State: " + current_state_.name_);
