@@ -12,7 +12,7 @@ class DashStopPlayerState : PlayerState {
             ((player_.facing_right_ && stick_value.x < -STICK_DEADZONE_THRESHOLD) ||
             (!player_.facing_right_ && stick_value.x > STICK_DEADZONE_THRESHOLD)))
         {
-            return new DashStartPlayerState(player_);
+            return new DashPlayerState(player_);
         }
         return this;
     }
@@ -28,7 +28,7 @@ class DashStopPlayerState : PlayerState {
             ((player_.facing_right_ && stick_value.x < -STICK_DEADZONE_THRESHOLD) ||
             (!player_.facing_right_ && stick_value.x > STICK_DEADZONE_THRESHOLD)))
         {
-            return new DashStartPlayerState(player_);
+            return new DashPlayerState(player_);
         }
         return this;
     }

@@ -10,7 +10,7 @@ class DashPlayerState : PlayerState {
 	protected override PlayerState onControlStickHeld(Inputs inputs)
 	{
         Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if (stick_value.y < -STICK_DASH_THRESHOLD)
+        if (stick_value.y < -STICK_DASH_THRESHOLD && Math.Abs(stick_value.y) > Math.Abs(stick_value.x))
         {
             player_.rigid_body_.velocity = new Vector2(0, player_.rigid_body_.velocity.y);
             return new NeutralPlayerState(player_);
@@ -24,7 +24,7 @@ class DashPlayerState : PlayerState {
 	protected override PlayerState onControlStickPushed(Inputs inputs)
 	{
         Vector2 stick_value = ((StickInputAction)inputs.control_stick_.getInputAction()).value_;
-        if (stick_value.y < -STICK_DASH_THRESHOLD)
+        if (stick_value.y < -STICK_DASH_THRESHOLD && Math.Abs(stick_value.y) > Math.Abs(stick_value.x))
         {
             player_.rigid_body_.velocity = new Vector2(0, player_.rigid_body_.velocity.y);
             return new NeutralPlayerState(player_);

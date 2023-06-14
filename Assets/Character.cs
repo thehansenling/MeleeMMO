@@ -152,6 +152,7 @@ public class Character : MonoBehaviour
 		print("Current State: " + current_state_.name_);
     	print("Stick Input: " + ((StickInputAction)inputs_.control_stick_.getInputAction()).value_);
         print("Current Velocity: " + rigid_body_.velocity);
+        print(facing_right_);
 		// If state is ending based on number of frames
 		if (current_state_.frame_ >= current_state_.duration_frames_ && current_state_.duration_frames_ != -1)
 		{
