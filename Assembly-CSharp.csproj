@@ -57,10 +57,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\WalkPlayerState.cs" />
+    <Compile Include="Assets\DownAirPlayerState.cs" />
     <Compile Include="Assets\ActionableAirbornePlayerState.cs" />
     <Compile Include="Assets\LandingLagPlayerState.cs" />
     <Compile Include="Assets\RunTurnPlayerState.cs" />
     <Compile Include="Assets\NeutralPlayerState.cs" />
+    <Compile Include="Assets\Enemy.cs" />
+    <Compile Include="Assets\UpAirPlayerState.cs" />
     <Compile Include="Assets\AirdodgePlayerState.cs" />
     <Compile Include="Assets\DashStartPlayerState.cs" />
     <Compile Include="Assets\JumpSquatPlayerState.cs" />
@@ -69,17 +72,21 @@
     <Compile Include="Assets\Character.cs" />
     <Compile Include="Assets\JumpPlayerState.cs" />
     <Compile Include="Assets\DashPlayerState.cs" />
+    <Compile Include="Assets\ForwardAirPlayerState.cs" />
+    <Compile Include="Assets\BackAirPlayerState.cs" />
     <Compile Include="Assets\RunPlayerState.cs" />
+    <Compile Include="Assets\NeutralAirPlayerState.cs" />
     <Compile Include="Assets\PlayerState.cs" />
     <Compile Include="Assets\TurnaroundPlayerState.cs" />
     <Compile Include="Assets\DashTurnaroundPlayerState.cs" />
     <Compile Include="Assets\RunStopPlayerState.cs" />
     <Compile Include="Assets\DashStopPlayerState.cs" />
-    <Compile Include="Assets\DownAirPlayerState.cs" />
-    <Compile Include="Assets\NeutralAirPlayerState.cs" />
-    <Compile Include="Assets\BackAirPlayerState.cs" />
-    <Compile Include="Assets\UpAirPlayerState.cs" />
-    <Compile Include="Assets\ForwardAirPlayerState.cs" />
+    <Compile Include="Assets\AerialAttackPlayerState.cs" />
+    <Compile Include="Assets\DownSpecialPlayerState.cs" />
+    <Compile Include="Assets\UpSpecialPlayerState.cs" />
+    <Compile Include="Assets\SideSpecialPlayerState.cs" />
+    <Compile Include="Assets\NeutralSpecialPlayerState.cs" />
+    <Compile Include="Assets\HitStunPlayerState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

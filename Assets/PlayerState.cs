@@ -12,7 +12,13 @@ enum CharacterState
 	DownAir,
 	ForwardAir,
 	UpAir,
-    LandingLag
+    LandingLag,
+	ActionableAirborne,
+	DownSpecial,
+	SideSpecial,
+	UpSpecial,
+	NeutralSpecial,
+	HitStun
 }
 
 public abstract class PlayerState
@@ -34,7 +40,8 @@ public abstract class PlayerState
 
 	// Functions used to calculate next state in different cases
 	public virtual PlayerState processOnCollision(Inputs inputs) { return this; }
-	public PlayerState processInputs(Inputs inputs)
+    public virtual PlayerState processOnEnvironment(Inputs inputs) { return new ActionableAirbornePlayerState(player_); }
+    public PlayerState processInputs(Inputs inputs)
 	{
 		ButtonInputAction shieldAction = (ButtonInputAction) inputs.shield_.getInputAction();
 		PlayerState newState;
@@ -110,7 +117,7 @@ public abstract class PlayerState
 		ButtonInputAction specialAction = (ButtonInputAction) inputs.special_.getInputAction();
 		switch(specialAction.input_action_state_) {
 			case InputActionState.PUSHED:
-				newState = onSpecialPushed();
+				newState = onSpecialPushed(inputs);
 				inputs.special_.consumed_ = true;
 				return newState.processInputs(inputs);
 			case InputActionState.HELD:
@@ -142,7 +149,7 @@ public abstract class PlayerState
 	}
 	public virtual PlayerState defaultNextState(Inputs inputs) { return null; }
 
-	public PlayerState processOnHit(Inputs inputs) {
+	public virtual PlayerState processOnHit(Inputs inputs) {
 		return this;
 	}
 
@@ -165,9 +172,21 @@ public abstract class PlayerState
 	protected virtual PlayerState onAttackStickHeld(Inputs inputs) { return this; }
 	protected virtual PlayerState onGrabPushed() { return this; }
 	protected virtual PlayerState onGrabHeld() { return this; }
-	protected virtual PlayerState onSpecialPushed() { return this; }
+	protected virtual PlayerState onSpecialPushed(Inputs inputs) { return this; }
 	protected virtual PlayerState onSpecialHeld() { return this; }
 	protected virtual PlayerState onControlStickPushed(Inputs inputs) { return this; }
 	protected virtual PlayerState onControlStickHeld(Inputs inputs) { return this; }
 	protected virtual PlayerState onControlStickNotPushed(Inputs inputs) { return this; }
+
+	public virtual Vector2 HitForce(Collider2D collision) { return new Vector2(0, 0); }
+    public HashSet<int> hit_ids_ = new HashSet<int>();
+    public void AddHitID(int enemy_id)
+    {
+        hit_ids_.Add(enemy_id);
+    }
+    public bool CheckHitID(int enemy_id)
+    {
+        return hit_ids_.Contains(enemy_id);
+    }
+
 }

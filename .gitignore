@@ -12,3 +12,5 @@
 **.vsconfig
 **Assembly-CSharp.csproj
 **/Library/StateCache/*
+**.gitold
+**obj/Debug/*

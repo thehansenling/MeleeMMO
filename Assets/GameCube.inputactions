@@ -49,6 +49,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Special",
+                    "type": "Button",
+                    "id": "7af3d680-9289-4f51-a17a-a0ddaf70a828",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -67,7 +76,7 @@
                     "name": "",
                     "id": "49513cab-b5d7-4f4e-98ef-cf2c9b9f9595",
                     "path": "<GameCubeController>/xButton",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
@@ -78,7 +87,7 @@
                     "name": "",
                     "id": "6bbf4f9c-1563-48b8-b728-a212d5fa1b8a",
                     "path": "<GameCubeController>/yButton",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
@@ -100,7 +109,7 @@
                     "name": "",
                     "id": "08cb650f-cef7-49f1-8b0e-66825d1934a6",
                     "path": "<GameCubeController>/rightTriggerButton",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "",
                     "action": "Trigger",
@@ -111,7 +120,7 @@
                     "name": "",
                     "id": "1ddae630-b995-4cac-abaf-9a8901e8fe0a",
                     "path": "<GameCubeController>/aButton",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "processors": "",
                     "groups": "",
                     "action": "Attack",
@@ -126,6 +135,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "AttackStick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "070883a5-a73b-4049-aab1-64a41df75a3a",
+                    "path": "<GameCubeController>/bButton",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Special",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

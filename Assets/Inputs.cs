@@ -36,8 +36,8 @@ public abstract class Input {
 }
 
 public class ButtonInput : Input {
-	private bool is_depressed_;
-	private bool was_depressed_;
+	private bool is_depressed_ = false;
+	private bool was_depressed_ = false;
 
 	public override InputAction getInputAction() {
 		if (consumed_) {
@@ -57,7 +57,7 @@ public class ButtonInput : Input {
 
 	public void setButton(bool newButtonValue) {
 		was_depressed_ = is_depressed_;
-		is_depressed_ = newButtonValue;
+        is_depressed_ = newButtonValue;
 		consumed_ = false;
 	}
 }

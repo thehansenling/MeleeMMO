@@ -17,13 +17,15 @@ class AirdodgePlayerState : PlayerState {
 	}
 
 	public override PlayerState processOnCollision(Inputs inputs) {
-		return new LandingLagPlayerState(player_, 12);
+        Debug.Log("LANDING LAG");
+        return new LandingLagPlayerState(player_, 12);
 	}
 
 	public override PlayerState defaultNextState(Inputs inputs) {
 		player_.air_dodge_ = false;
 		player_.rigid_body_.velocity = new Vector2(0, 0);
         player_.rigid_body_.gravityScale = 1;
+		Debug.Log("DEFAULT INACTIONABLE");
         return new InactionableAirbornePlayerState(player_);
 	}
 

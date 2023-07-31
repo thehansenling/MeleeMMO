@@ -6,17 +6,18 @@ TagManager:
   tags:
   - Ground
   - Wall
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Character
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Enemy
+  - HitBox
+  - HurtBox
+  - Ground
   - 
   - 
   - 

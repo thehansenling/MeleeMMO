@@ -5,13 +5,18 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
+
+
 public class Character : MonoBehaviour
 {
+    protected bool DEBUG_PRINT = false;
 
     public int MAX_SPEED;
     public int WALK_SPEED;
     public int MAX_FALL_SPEED;
-    bool in_air_;
+    public int MAX_FAST_FALL_SPEED;
+    public bool in_air_;
+    protected bool last_in_air_;
     public Rigidbody2D rigid_body_;
     public Animator animator_;
     public int jumps_;
@@ -19,6 +24,7 @@ public class Character : MonoBehaviour
     public bool facing_right_ = true;
     public bool air_dodge_;
     public Vector2 air_dodge_velocity_;
+    protected int id_ = 1;
 
 
     bool shield_ = false;
@@ -30,12 +36,13 @@ public class Character : MonoBehaviour
 	Vector2 control_stick_ = new Vector2(0, 0);	
 
 	PlayerState current_state_;
-	bool hit_;
+	protected bool hit_;
 	//bool collision_;
     Inputs inputs_;
-
+    public int GetID() { return id_; }
     void DetectCollisionExit()
     {
+        print("EXITING");
         CapsuleCollider2D coll = GetComponent<CapsuleCollider2D>();
         ContactFilter2D filter = new ContactFilter2D().NoFilter();
         List<Collider2D> results = new List<Collider2D>();
@@ -43,6 +50,7 @@ public class Character : MonoBehaviour
         bool on_ground = false;
         foreach (Collider2D result in results)
         {
+            print(result.tag);
             if (result.gameObject.tag == "Ground")
             {
                 on_ground = true;
@@ -51,6 +59,25 @@ public class Character : MonoBehaviour
         in_air_ = !on_ground;
     }
 
+    protected void OnGround()
+    {
+        RaycastHit2D raycast = Physics2D.Raycast(GetComponent<Collider2D>().bounds.min, new Vector2(0, -1), Mathf.Infinity, 1 << 9);
+        float ground_raycast = raycast.distance;
+        if (ground_raycast > .01)
+        {
+            in_air_ = true;
+        }
+        else
+        {
+            in_air_ = false;
+        }
+    }
+    public void OnHit(Vector2 hit_force)
+    {
+        print("HIT HIT HIT");
+        rigid_body_.velocity = hit_force;
+        hit_ = true;
+    }
     public void MoveCharacter(Inputs input, float speed = 16)
     {
 		Vector2 stick_value = ((StickInputAction)input.control_stick_.getInputAction()).value_;
@@ -99,13 +126,14 @@ public class Character : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
-        jumps_ = 2;
+        jumps_ = 1;
         in_air_ = false;
         rigid_body_ = GetComponent<Rigidbody2D>();
         animator_ = GetComponent<Animator>();
         inputs_ = new Inputs();
         current_state_ = new NeutralPlayerState(this);
         MAX_FALL_SPEED = 30;
+        MAX_FAST_FALL_SPEED = 50;
         MAX_SPEED = 16;
         WALK_SPEED = 6;
         air_dodge_ = false;
@@ -124,62 +152,77 @@ public class Character : MonoBehaviour
 
     private void OnJump(InputValue value)
     {
-        jump_ = true;
+        jump_ = !jump_;
     }
 
     private void OnTrigger(InputValue value)
     {
-        shield_ = true;
+        shield_ = !shield_;
     }
 
     private void OnAttack(InputValue value)
     {
-        attack_ = true;
+        attack_ = !attack_;
     }
 
     private void OnAttackStick(InputValue value)
     {
         attack_stick_ = value.Get<Vector2>();
     }
-
+    private void OnSpecial(InputValue value)
+    {
+        special_ = !special_;
+    }
 
     // Update is called once per frame
     void Update()
     {
-        
-        DetectCollisionExit();
-    	UpdateInputs();
-		print("Current State: " + current_state_.name_);
-    	print("Stick Input: " + ((StickInputAction)inputs_.control_stick_.getInputAction()).value_);
-        print("Current Velocity: " + rigid_body_.velocity);
-        print(facing_right_);
+
+        //DetectCollisionExit();
+        OnGround();
+
+        UpdateInputs();
+        if (DEBUG_PRINT)
+        {
+            print("Current State: " + current_state_.name_);
+            print("Stick Input: " + ((StickInputAction)inputs_.control_stick_.getInputAction()).value_);
+            print("Current Velocity: " + rigid_body_.velocity);
+            print(facing_right_);
+        }
 		// If state is ending based on number of frames
 		if (current_state_.frame_ >= current_state_.duration_frames_ && current_state_.duration_frames_ != -1)
 		{
 			current_state_ = current_state_.defaultNextState(inputs_);
 		}
-        print("Post Default Velocity: " + rigid_body_.velocity);
+        if (DEBUG_PRINT) print("Post Default Velocity: " + rigid_body_.velocity);
 
         current_state_ = current_state_.processInputs(inputs_);
         
         if (hit_)
 		{
+            print("HIT HIT HIT HIT");
 			current_state_ = current_state_.processOnHit(inputs_);
 		}
 		// if (collision_)
+        if (!last_in_air_ && in_air_)
+        {
+            current_state_ = current_state_.processOnEnvironment(inputs_);
+        }
 		if (!in_air_)
 		{
 			current_state_ = current_state_.processOnCollision(inputs_);
 		}
-        print("Post Collision Velocity: " + rigid_body_.velocity);
+        if (DEBUG_PRINT) print("Post Collision Velocity: " + rigid_body_.velocity);
 
         current_state_.execute(inputs_);
-        print("Post Execute Velocity: " + rigid_body_.velocity);
+        if (DEBUG_PRINT) print("Post Execute Velocity: " + rigid_body_.velocity);
 
         //end
    
         DisplayState();
- 		ResetInputs();
+        last_in_air_ = in_air_;
+        hit_ = false;
+ 		//ResetInputs();
     }
 
 
@@ -235,10 +278,26 @@ public class Character : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground")
         {
-            print("ENTER COLLISION DETECTED");
             //collision_ = true;
             in_air_ = false;
             jumps_ = 1;
+        }
+        else if (collision.gameObject.tag == "Enemy")
+        {
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Enemy enemy = collision.gameObject.GetComponentInParent<Enemy>();
+        print(enemy.GetID());
+        if (!current_state_.CheckHitID(enemy.GetID()))
+        {
+            var hit_direction = current_state_.HitForce(collision);
+            print(hit_direction);
+            enemy.OnHit(hit_direction);
+            current_state_.AddHitID(enemy.GetID());
         }
     }
 }
